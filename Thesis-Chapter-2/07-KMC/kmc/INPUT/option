@@ -1,0 +1,6 @@
+# n_step
+1000000
+# v(/s) kB(eV/K), Temp(K), dG0(eV), alpha
+1e13 8.6e-5 300 0.55 0.0
+# n_out
+1000

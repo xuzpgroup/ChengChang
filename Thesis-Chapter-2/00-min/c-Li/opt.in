@@ -1,0 +1,39 @@
+# generate the box and atom positions using a diamond lattice
+variable        a equal 3.51 # lattice constant of bcc Li
+
+# generate the crystal Si
+variable        b equal 2
+variable        c equal 2
+variable        d equal 2
+
+# the number of Li
+# variable        n equal 4320
+
+units           metal
+boundary        p p p
+
+lattice         bcc $a
+region          box prism 0 $b 0 $c 0 $d 0.0 0.0 0.0
+create_box	2 box
+create_atoms    1 box
+
+mass            1  6.941
+mass            2 28.0855
+
+pair_style      meam
+pair_coeff	* * library.meam Li Si LiSi.meam Li Si
+
+#----------------
+# minimization
+#---------------
+
+min_style       cg
+
+fix             2 all box/relax aniso 0.0 vmax 0.001
+
+thermo          1
+thermo_style    custom step pe ke xlo xhi ylo yhi zlo zhi
+
+dump            1 all xyz 1 min.xyz
+
+minimize        1.0e-6 1.0e-6 1000 1000

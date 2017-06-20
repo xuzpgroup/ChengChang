@@ -1,0 +1,32 @@
+# One Li in a-Si 
+
+units           metal
+boundary        p p p
+
+atom_style      atomic
+read_data       input.data
+
+mass            1  6.941
+mass            2 28.0855
+
+pair_style      meam
+pair_coeff	* * library.meam Li Si LiSi.meam Li Si
+
+group           g_Li type 1
+group           g_Si type 2
+
+#----------------
+# minimization
+#---------------
+
+min_style       cg
+
+#fix             0 g_Si rigid single
+#fix             1 g_Si momentum 1 linear 1 1 1 angular
+
+thermo          1
+thermo_style    custom step pe ke
+
+dump            1 all xyz 1 min.xyz
+
+minimize        1.0e-6 1.0e-6 1000 1000

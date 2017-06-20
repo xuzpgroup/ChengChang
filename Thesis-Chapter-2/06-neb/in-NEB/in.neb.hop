@@ -1,0 +1,45 @@
+# NEB simulation
+
+units           metal
+boundary        p p p
+
+atom_style      atomic
+atom_modify     map array sort 0 0.0
+
+read_data       input.data
+
+neighbor        0.3 bin
+neigh_modify    delay 5
+
+variable        u uloop 20
+
+mass            1   6.941
+mass            2  28.0855
+
+pair_style      meam
+pair_coeff	* * library.meam Li Si LiSi.meam Li Si
+
+#----------
+# minimize
+#----------
+
+#min_style       cg
+#minimize        1.0e-6 1.0e-8 1000 10000
+
+#--------
+# neb
+#--------
+
+#fix             1 neb_atoms neb 1.0
+fix             1 all neb 1.0
+
+thermo          1000
+thermo_style    custom step ke pe
+
+timestep        0.001 # will converge quickly when use 10x larger than that in MD
+
+#dump            1 neb_atoms atom 10 dump.neb.$u
+dump            1 all xyz 1000 dump.neb.$u
+
+min_style       quickmin
+neb             0.0 0.01 100000 100000 1000 final final.hop # ftol < 0.01 eV/Ang
